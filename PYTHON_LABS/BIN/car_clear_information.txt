@@ -1,0 +1,4 @@
+Mersedes-Benz, AB3214FD, 2023, Pavlo Hryhoriichuk
+ Honda, DR4215KH, 2003, Josef Tadani
+ Lamborgini, EQ5215KJ, 2020, Octopus Vogon
+ Kia, TY8459JU, 2017, Pavlo Hryhoriichuk
