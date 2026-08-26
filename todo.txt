@@ -1,9 +1,5 @@
 todo
 
--cline 
-
--conspectus
-
 - GitHub
 
 -Upwork / work in general
