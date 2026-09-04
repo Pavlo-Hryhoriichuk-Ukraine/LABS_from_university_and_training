@@ -2,7 +2,6 @@ import os
 import subprocess
 import subprocess
 import sys
-import webbrowser
 from pathlib import Path
 from for_backend import run_matrix_pipeline
 
@@ -113,7 +112,7 @@ def generate_local_report(text: str, output_filename: str = "undef_report.html")
 
 
 def main():
-    raw_filename = "test_Collosians.txt"
+    raw_filename = "test_Luke1.txt"
     text_filename = PROJECT_DIR / "texts" / raw_filename
     output_file = PROJECT_DIR / "results" / (raw_filename + "_report.html")
 

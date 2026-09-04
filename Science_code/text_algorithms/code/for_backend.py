@@ -195,18 +195,27 @@ def run_matrix_pipeline(raw_text: str) -> dict:
 
         try:
             am, gm, hm = calculate_means(eigenvalues)
-            angles = calculate_triangle_angles(am, gm, hm)
-            triangle_angles = [float(a) for a in angles]
 
-            fig_tri = plot_means_triangle(am, gm, hm, triangle_angles)
-            b64_triangle = fig_to_base64(fig_tri)
+            # Перевірка нерівності трикутника (AM завжди найбільша сторона)
+            if (gm + hm) > am:
+                angles = calculate_triangle_angles(am, gm, hm)
+                triangle_angles = [float(a) for a in angles]
+                fig_tri = plot_means_triangle(am, gm, hm, triangle_angles)
+                b64_triangle = fig_to_base64(fig_tri)
 
-            # Equilateral triangle detection (AI marker)
-            if (max(triangle_angles) - min(triangle_angles)) < 20.0:
-                equilateral_triangles += 1
+                # Equilateral triangle detection (AI marker)
+                if (max(triangle_angles) - min(triangle_angles)) < 20.0:
+                    equilateral_triangles += 1
+            else:
+                # Сторони не утворюють трикутник
+                triangle_angles = None
+                b64_triangle = None
+                print(f"The triangle cannot be made: AM={am:.2f}, GM={gm:.2f}, HM={hm:.2f}")
 
-        except ValueError:
+        except ValueError as e:
+            print(f"ValueError (maybe, complex values) : {e}")
             triangle_angles = None
+            b64_triangle = None
 
         response_data["matrices"][size_str] = { # type: ignore
             "metrics": {

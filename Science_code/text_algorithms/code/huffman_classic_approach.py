@@ -74,7 +74,7 @@ def main():
         for char in sorted(frequencies.keys()):
             print(f" {repr(char):<6} | {frequencies[char]:^10} | {huffman_codes[char]}")
 
-        encoded = ''.join(huffman_codes[char] for char in text)
+        encoded = ''.join(str(huffman_codes[char]) for char in text)
         print(f"\nEncoded text: {encoded}")
 
 
@@ -89,7 +89,7 @@ def main():
 
         huffman_codes = huffman_code_tree(root)
 
-        encoded = ''.join(huffman_codes[char] for char in text)
+        encoded = ''.join(str(huffman_codes[char]) for char in text)
         path, orig_name = os.path.splitext(file_path)
         name, extantion = orig_name.split('.')
         result_filename = path + name + '_Huffman_encoded' + "." + extantion

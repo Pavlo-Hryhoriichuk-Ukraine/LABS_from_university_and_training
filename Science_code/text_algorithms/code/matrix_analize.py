@@ -162,6 +162,11 @@ def analyze_eigenvalues(normalized_matrix: np.ndarray) -> np.ndarray:
     Обчислює та повертає відсортовані власні значення матриці.
     """
     eigenvalues = np.linalg.eigvals(normalized_matrix)
+    threshold = 0.05
+    eigenvalues = [abs(ev) for ev in eigenvalues if abs(ev) > threshold] #type: ignore
+    print(f"Eigenvalues above threshold {threshold}: {eigenvalues}")
+    if not eigenvalues:
+        raise ValueError("No valid eigenvalues found. The matrix may be degenerate or improperly normalized.")
 
     # Для текстового аналізу нас цікавить їхня амплітуда (модуль).
     abs_eigenvalues = np.abs(eigenvalues)
@@ -169,4 +174,4 @@ def analyze_eigenvalues(normalized_matrix: np.ndarray) -> np.ndarray:
     # 3. Сортуємо від найбільшого до найменшого
     sorted_eigenvals = np.sort(abs_eigenvalues)[::-1]
 
-    return sorted_eigenvals
+    return sorted_eigenvals[:10]
