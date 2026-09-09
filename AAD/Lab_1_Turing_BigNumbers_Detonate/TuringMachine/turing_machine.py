@@ -5,7 +5,7 @@ from collections.abc import Callable
 import turtle
 import time
 
-
+TypeTuringComandTable = dict[tuple[str,str], tuple[str,str, str]]
 @dataclass
 class TuringMachine:
     machine_code_table: dict[tuple[str, str], tuple[str, str, str]]
@@ -143,7 +143,7 @@ def print_text_step(tm: TuringMachine) -> None:
 
 
 def main():
-    test_add_table = {
+    test_add_table: TypeTuringComandTable = {
         ('q0', '1') : ('q1', '_', 'R'),
         ('q1', '1') : ('q2', '_', 'R'),
         ('q2', '1') : ('q2', '1', 'R'),
@@ -152,7 +152,7 @@ def main():
         ('q3', '_') : ('q_done', '_', 'R')
     }
 
-    test_table_2 = {
+    test_table_2: TypeTuringComandTable = {
         ('q0', '0'): ('q0', '1', 'R'),
         ('q0', '1'): ('q0', '0', 'R'),
         ('q0', '_'): ('q_done', '_', 'N')

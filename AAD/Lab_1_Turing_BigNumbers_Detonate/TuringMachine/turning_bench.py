@@ -1,7 +1,7 @@
 import time
 import random
 import matplotlib.pyplot as plt
-from turing_machine import TuringMachine
+from turing_machine import TuringMachine, TypeTuringComandTable
 
 def benchmark_turing_machine(transitions, end_states, lengths: list[int]):
     step_counts = []
@@ -53,7 +53,7 @@ def plot_complexity_results(lengths: list[int], steps: list[int], times: list[in
 
 
 if __name__ == "__main__":
-    test_table = {
+    test_table: TypeTuringComandTable = {
         ('q0', '0'): ('q0', '1', 'R'),
         ('q0', '1'): ('q0', '0', 'R'),
         ('q0', '_'): ('q_done', '_', 'N')
