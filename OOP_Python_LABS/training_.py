@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 def weekday_order(lst_of_weekdays: list[str]) -> list[str]:
     weekdays_dict = {
