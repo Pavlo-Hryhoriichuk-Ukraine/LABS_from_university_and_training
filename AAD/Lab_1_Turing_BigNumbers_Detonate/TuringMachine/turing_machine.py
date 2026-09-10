@@ -142,7 +142,7 @@ def print_text_step(tm: TuringMachine) -> None:
     print("-" * 40)
 
 
-def main():
+if __name__ == "__main__":
     test_add_table: TypeTuringComandTable = {
         ('q0', '1') : ('q1', '_', 'R'),
         ('q1', '1') : ('q2', '_', 'R'),
@@ -179,7 +179,3 @@ def main():
 
     print(f"\nCompleted! Result on tape: {result}")
     turtle.done()
-
-
-if __name__ == "__main__":
-    main()
