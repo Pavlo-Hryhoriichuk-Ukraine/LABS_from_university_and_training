@@ -7,6 +7,7 @@ import string
 
 BaseRange = Annotated[int, "Must be an integer in range [2, 32]"]
 
+
 def _build_alphabet_mappings() -> tuple[dict[str, int], dict[int, str]]:
     char_to_int = {str(i): i for i in range(10)}
     int_to_char = {i: str(i) for i in range(10)}
@@ -83,15 +84,15 @@ class BigInt:
             carry = val
 
             for i in range(len(result)):
-                self.stats.multiplications += 1
-                self.stats.additions += 1
-                self.stats.divisions += 2 # Modulo and floor division
 
                 temp = result[i] * self.base + carry
                 result[i] = temp % target_base
                 carry = temp // target_base
 
                 self.stats.carries += 1
+                self.stats.multiplications += 1
+                self.stats.additions += 1
+                self.stats.divisions += 2 # Modulo and floor division
 
             while carry > 0:
                 self.stats.divisions += 2
@@ -216,7 +217,7 @@ class BigInt:
             if d < 0:
                 d += self.base
                 borrow = 1
-                self.stats.additions += 1  # For d += self.base
+                self.stats.additions += 1
             else:
                 borrow = 0
 

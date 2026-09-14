@@ -10,34 +10,42 @@ from typing import Any
 from operations import OperationStats, BigInt
 from bench_add import ROOT_DIR
 
-FILE_PATH = "multiplication_experiment.png"
+FILE_PATH = "multiplication_base10_experiment.png"
 
 
-def generate_binary(length: int) -> str:
-    return '1' + ''.join(random.choice(['0', '1']) for _ in range(length - 1))
+def generate_decimal(length: int) -> str:
+    """Generates a random decimal string of a given length."""
+    chars = "0123456789"
+    first = random.choice(chars[1:])  # Ensure it doesn't start with 0
+    rest = ''.join(random.choice(chars) for _ in range(length - 1))
+    return first + rest
 
 
 def worker_single_mul_strategy(n: int, strategy_base: int) -> tuple[int, int, int, float]:
-    str_a = generate_binary(n)
-    str_b = generate_binary(n)
+    """
+    Executes exactly ONE multiplication test.
+    Baseline is Base 10.
+    """
+    str_a = generate_decimal(n)
+    str_b = generate_decimal(n)
 
     stats = OperationStats()
 
-    if strategy_base == 2:
-        a2 = BigInt.from_string(str_a, 2, stats)
-        b2 = BigInt.from_string(str_b, 2, stats)
+    if strategy_base == 10:
+        a10 = BigInt.from_string(str_a, 10, stats)
+        b10 = BigInt.from_string(str_b, 10, stats)
 
         # Reset stats to count ONLY the multiplication operations
         stats.reset()
         t0 = time.perf_counter()
-        _ = a2 * b2
+        _ = a10 * b10
         t1 = time.perf_counter()
 
     else:
-        a_init = BigInt.from_string(str_a, 2, stats)
-        b_init = BigInt.from_string(str_b, 2, stats)
+        a_init = BigInt.from_string(str_a, 10, stats)
+        b_init = BigInt.from_string(str_b, 10, stats)
 
-        # Reset stats to count the ENTIRE pipeline: Conversions + Multiplication
+        # Reset stats to count the ENTIRE pipeline: Conversions + Multiplication + Final Conversion
         stats.reset()
         t0 = time.perf_counter()
 
@@ -45,7 +53,7 @@ def worker_single_mul_strategy(n: int, strategy_base: int) -> tuple[int, int, in
         b_conv = b_init.convert_to(strategy_base)
 
         c_conv = a_conv * b_conv
-        _ = c_conv.convert_to(2)
+        _ = c_conv.convert_to(10)
 
         t1 = time.perf_counter()
 
@@ -53,17 +61,17 @@ def worker_single_mul_strategy(n: int, strategy_base: int) -> tuple[int, int, in
 
 
 def run_optimized_multiplication_experiment() -> None:
-    lengths = [100, 250, 500, 1000, 2000, 4000]
-    strategies = [2, 8, 16, 32]
+    lengths = [100, 250, 500, 1000]
+    strategies = [10, 2, 8, 16, 32]
     runs_per_length = 3
 
     raw_results: defaultdict[int, defaultdict[int, dict[str, list[Any]]]] = defaultdict(
         lambda: defaultdict(lambda: {'ops': [], 'times': []})
     )
 
-    print("Submitting multiplication tasks to the CPU pool... Please wait.")
-    print(f"{'N (bits)':<10} | {'Base 2 Ops':<12} | {'Base 32 Ops':<12} | {'Base 2 (s)':<12} | {'Base 32 (s)':<12}")
-    print("-" * 65)
+    print("Submitting Base 10 multiplication tasks to the CPU pool... Please wait.")
+    print(f"{'N (digits)':<12} | {'Base 10 Ops':<12} | {'Base 2 Ops':<12} | {'Base 10 (s)':<12} | {'Base 2 (s)':<12}")
+    print("-" * 75)
 
     with ProcessPoolExecutor() as executor:
         futures = [
@@ -79,8 +87,8 @@ def run_optimized_multiplication_experiment() -> None:
             raw_results[n][base]['times'].append(t)
 
 
-    data_ops: dict[int, list[int]] = {2: [], 8: [], 16: [], 32: []}
-    data_time: dict[int, list[float]] = {2: [], 8: [], 16: [], 32: []}
+    data_ops: dict[int, list[int]] = {10: [], 2: [], 8: [], 16: [], 32: []}
+    data_time: dict[int, list[float]] = {10: [], 2: [], 8: [], 16: [], 32: []}
     sorted_lengths = sorted(lengths)
 
     for n in sorted_lengths:
@@ -91,25 +99,25 @@ def run_optimized_multiplication_experiment() -> None:
             data_ops[b].append(median_ops)
             data_time[b].append(median_time)
 
-        print(f"{n:<10} | {data_ops[2][-1]:<12} | {data_ops[32][-1]:<12} | {data_time[2][-1]:<12.5f} | {data_time[32][-1]:<12.5f}")
+        print(f"{n:<12} | {data_ops[10][-1]:<12} | {data_ops[2][-1]:<12} | {data_time[10][-1]:<12.5f} | {data_time[2][-1]:<12.5f}")
 
 
     _ , (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-    colors = {2: 'red', 8: 'orange', 16: 'blue', 32: 'green'}
+    colors = {10: 'red', 2: 'purple', 8: 'orange', 16: 'blue', 32: 'green'}
 
     for b in strategies:
-        label = 'Direct Base 2' if b == 2 else f'Convert -> Mul -> Back (Base {b})'
+        label = 'Direct Base 10' if b == 10 else f'Convert -> Mul -> Back (Base {b})'
         ax1.plot(sorted_lengths, data_ops[b], marker='o', color=colors[b], label=label)
         ax2.plot(sorted_lengths, data_time[b], marker='s', color=colors[b], label=label)
 
-    ax1.set_title('Operations C(n): Direct vs Conversion')
-    ax1.set_xlabel('Length of binary string (N bits)')
+    ax1.set_title('Operations C(n): Direct Base 10 vs Conversion')
+    ax1.set_xlabel('Length of decimal string (N digits)')
     ax1.set_ylabel('Total Operations C(n)')
     ax1.grid(True)
     ax1.legend()
 
-    ax2.set_title('Time T(n): Direct vs Conversion')
-    ax2.set_xlabel('Length of binary string (N bits)')
+    ax2.set_title('Time T(n): Direct Base 10 vs Conversion')
+    ax2.set_xlabel('Length of decimal string (N digits)')
     ax2.set_ylabel('Time T(n) (seconds)')
     ax2.grid(True)
     ax2.legend()

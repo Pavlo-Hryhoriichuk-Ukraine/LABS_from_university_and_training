@@ -30,6 +30,7 @@ def benchmark_turing_machine(transitions, end_states, lengths: list[int]):
 def plot_complexity_results(lengths: list[int], steps: list[int], times: list[int]) -> None:
 
     plt.figure(figsize=(13, 5))
+
     # Subplot 1: Algorithmic steps vs Input length
     plt.subplot(1, 2, 1)
     plt.plot(lengths, steps, marker='o', color='tab:blue', label='Measured Steps')

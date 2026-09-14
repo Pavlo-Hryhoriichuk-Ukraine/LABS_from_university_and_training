@@ -146,6 +146,7 @@ if __name__ == "__main__":
     test_add_table: TypeTuringComandTable = {
         ('q0', '1') : ('q1', '_', 'R'),
         ('q1', '1') : ('q2', '_', 'R'),
+        ('q1', '_') : ('q_done', '_', 'R'),
         ('q2', '1') : ('q2', '1', 'R'),
         ('q2', '_') : ('q3', '1', 'R'),
         ('q3', '1') : ('q3', '1', 'R'),
@@ -172,7 +173,7 @@ if __name__ == "__main__":
         print_text_step(machine)
         visualizer.render(delay=2)
 
-    input_string = "11_111"
+    input_string = "1_1" #
     print(f"--- Starting execution for input: {input_string} ---")
 
     result = tm.run(input_string, on_step=sync_observer)
