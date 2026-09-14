@@ -27,10 +27,10 @@ class OperationStats:
 
     def reset(self) -> None:
         for f in fields(self):
-            setattr(self, f.name, 0) # type: ignore
+            setattr(self, f.name, 0)
 
     def get_total(self) -> int:
-        return sum(getattr(self, f.name) for f in fields(self))  # type: ignore
+        return sum(getattr(self, f.name) for f in fields(self))
 
 
 
