@@ -3,7 +3,7 @@ from typing import Dict
 from itertools import pairwise
 from itertools import pairwise
 
-from huffman import build_huffman_tree, huffman_code_tree
+from Science_code.text_algorithms.code.Part_1.huffman import build_huffman_tree, huffman_code_tree
 
 
 def build_matrix_16(text: str) -> np.ndarray:

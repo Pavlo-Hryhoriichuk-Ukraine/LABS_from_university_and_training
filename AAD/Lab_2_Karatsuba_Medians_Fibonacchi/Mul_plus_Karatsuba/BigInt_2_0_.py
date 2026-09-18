@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Annotated, ClassVar
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from itertools import zip_longest
 from functools import total_ordering
 import string
+
 
 BaseRange = Annotated[int, "Must be an integer in range [2, 32]"]
 
@@ -31,10 +32,12 @@ class BigInt:
     KARATSUBA_THRESHOLD: ClassVar[int] = 64
     TOOM_THRESHOLD: ClassVar[int] = 128
 
+
     def __post_init__(self) -> None:
         if not (2 <= self.base <= 32):
             raise ValueError(f"Base must be between 2 and 32. Got: {self.base}")
         self._normalize()
+
 
     def _normalize(self) -> None:
         while len(self.digits) > 1 and self.digits[-1] == 0:
@@ -182,14 +185,12 @@ class BigInt:
         for i, digit_a in enumerate(self.digits):
             carry = 0
             for j, digit_b in enumerate(other.digits):
-                # Add existing value in the array to the partial product
                 current_sum = (digit_a * digit_b) + carry + result_digits[i + j]
 
                 result_digits[i + j] = current_sum % self.base
                 carry = current_sum // self.base
 
             if carry > 0:
-                # Mathematically safer to use += here, though the cell is initially 0
                 result_digits[i + len(other.digits)] += carry
 
         return BigInt(result_digits, self.base, result_is_negative)
@@ -272,9 +273,6 @@ class BigInt:
 
 
     def mul_karatsuba_recursively(self, other: BigInt) -> BigInt:
-        """
-        Pure Karatsuba algorithm (O(n^1.585)) without thresholds.
-        """
         if self.base != other.base:
             raise ValueError("Bases must match for multiplication")
 

@@ -7,12 +7,12 @@ from matplotlib.figure import Figure
 import numpy as np
 from string import punctuation
 
-from matrix_analize import (
+from Science_code.text_algorithms.code.Part_1.matrix_analize import (
     analyze_eigenvalues, build_matrix_16, normalize_matrix,
     build_matrix_32, build_matrix_64, build_matrix_128, build_matrix_256
 )
-from huffman import result_analize
-from triangles import calculate_triangle_angles, calculate_means
+from Science_code.text_algorithms.code.Part_1.huffman import result_analize
+from Science_code.text_algorithms.code.Part_1.triangles import calculate_triangle_angles, calculate_means
 
 
 def clean_text(text: str) -> str:

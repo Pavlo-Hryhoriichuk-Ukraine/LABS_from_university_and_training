@@ -1,0 +1,37 @@
+Really disagree here:
+
+GPT is amazing at explaining the core concepts of Python. Asking it specific technical questions is amazing for learning. You can actually explain to GPT the way you understand something and ask if you got it right and verify your understanding. That is something you would never get out of watching YouTube or reading Stackoverflow. The only problem is hallucinations, and they are very rare for core python.
+
+ChatGPT isn't good for writing your code. And it's not the best place to learn something from 0, because of hallucinations. But it's really good to deepen and verify your understanding. And it's 100% a tool you should use for learning.
+
+Example for a good integrated learning work flow:
+
+Learn about the topic from trusted source
+
+Ask GPT specific questions about the topic to deepen and verify understanding
+
+Do a project around the topic
+
+Give GPT your code and ask it if you implemented the code right.
+
+Look at professional code examples implementing the topic, compare to gpt, and to your code.
+
+To truely masters go through the official docs, and again, compare to your code.
+
+In this process, you should always be skeptical of the chat and be aware that it can do mistakes. That's why we need other sources. With less popular topics, regular learning might be more efficient because there would be more hallucinations.
+
+The real danger in using AI is that it can build bad habits, which is really easy to do with how accessible it is. The biggest skill a coder needs to learn is the ability to problem-solve, but AI makes it feel like you are solving problems without knowing the answers. It's the same as giving a work-sheet and instead of doing the questions first, you immediately jump to the back of the book for the answers.
+
+Forcing yourself to go on StackOverflow is good, because you see how other people (probably humans) formulate questions and responses. And generally, their solutions won't be a perfect 1-to-1 to yours, so it requires you to adapt, maybe reading the docs, or learning that this applied to a different versions. All those "waste-time", but you are constantly learning throughout that whole process.
+
+There is a lot of value in AI, but it takes care and experience to know what they are, because as you say, it's not in the "coding" part but are great in the explaining part. It's easier generic advice is to not use it, since if they already knew how to use it well, they wouldn't be asking this question.
+
+If after reading the docs and doing your tests still don't fully understand how or why something in the standard module behaves like it does, don't feat diving into the CPython code for answers: https://github.com/python/cpython/
+
+Sometimes the module is written in C and, if you don't know the language, it's a dead end, but most standard library modules are written in Python and the code is right there.
+
+Never, ever fear to read a piece of code you don't understand at first sight, try to read and understand it; there's no magic or anything mystical, only code like the one you write.
+
+For me, the practice that helped me the most in my early days was reading other people's code. Reading your own code have the important bias that you can remember the though process you had while writing it, but with other people's code you only have the code so you need to really, really make an effort to understand it, and also you may learn things that would take ages to learn otherwise, like some patterns or techniques.
+
+Remember that to learn you need to step out of your comfort zone enough to force yourself into knowing something new but not enough to overwhelm you.

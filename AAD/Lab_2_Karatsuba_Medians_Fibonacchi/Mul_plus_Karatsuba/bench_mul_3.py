@@ -6,7 +6,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
 
-from BigInt_2_0_ import BigInt
+from BigInt_2_0_ import BigInt # type: ignore
 
 
 # Assuming BigInt is in a file named big_int.py

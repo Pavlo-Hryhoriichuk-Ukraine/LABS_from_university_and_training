@@ -3,7 +3,7 @@ import subprocess
 import subprocess
 import sys
 from pathlib import Path
-from for_backend import run_matrix_pipeline
+from Science_code.text_algorithms.code.Part_1.for_backend import run_matrix_pipeline
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 

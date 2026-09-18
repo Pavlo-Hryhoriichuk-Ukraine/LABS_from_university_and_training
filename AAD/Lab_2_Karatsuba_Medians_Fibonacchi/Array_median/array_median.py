@@ -123,8 +123,8 @@ def find_median_merge_sort_naive(db1: Database, db2: Database) -> float:
 
 if __name__ == "__main__":
 
-    db_A = Database([1, 12, 15, 26, 38])
-    db_B = Database([2, 13, 17, 30, 45])
+    db_A = Database([1, 12, 15, 26, 38, 45, 50, 70, 85])
+    db_B = Database([2, 13, 17, 30, 45, 60, 80, 90, 110])
 
     median_1 = find_median_logarithmic_recursive(db_A, db_B, 0, len(db_A) - 1, 0, len(db_B) - 1)
     print(f"Median_1: {median_1} ; fetch_times : DB_A : {db_A.query_count} , DB_B : {db_B.query_count}")
