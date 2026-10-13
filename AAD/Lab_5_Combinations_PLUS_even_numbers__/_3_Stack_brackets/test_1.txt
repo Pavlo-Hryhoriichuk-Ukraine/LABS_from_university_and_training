@@ -1,0 +1,6 @@
+def calculate(a, b):
+    result = {
+        "status": True,
+        "values": [a * (b + 1), (a - b) // 2]
+    }
+    return result

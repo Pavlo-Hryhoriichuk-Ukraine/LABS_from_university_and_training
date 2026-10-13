@@ -1,1 +1,1 @@
-print(float("-inf"))
+print(2 ** 32)

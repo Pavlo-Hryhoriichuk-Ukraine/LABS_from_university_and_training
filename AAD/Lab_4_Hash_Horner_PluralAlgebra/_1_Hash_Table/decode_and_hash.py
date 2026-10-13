@@ -3,16 +3,12 @@ from collections.abc import Callable
 from math import floor
 import math
 from abc import ABC, abstractmethod
-from typing import Any
 
 # Sentinel object for Open Addressing deletions
 DELETED = object()
 
 
 def convert_binary_message(binary_string: str) -> str:
-    """
-    Decodes an 8-bit encoded binary string into readable ASCII text.
-    """
     length = len(binary_string)
     if length < 8:
         raise ValueError("Argument 'binary_string' must contain at least 8 bits.")
@@ -267,8 +263,6 @@ class HashTableDoubleHashing(HashTableOpenAddressing):
 
     def _get_h2(self, item: str) -> int:
         k = get_16bit_key(item)
-        # Bitwise OR with 1 forces the step to be an odd number.
-        # Odd numbers are always coprime with powers of 2 (our table size).
         return (k % (self.number_of_cells - 1)) | 1
 
     def _get_probe_index(self, item: str, attempt: int, base_hash: int) -> int:

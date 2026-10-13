@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-ROOT_DIR = Path()
+ROOT_DIR = Path(__file__).parent
 
 from decode_and_hash import (
     decode_file,

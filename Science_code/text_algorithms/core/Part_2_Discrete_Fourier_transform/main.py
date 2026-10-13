@@ -11,7 +11,7 @@ project_root = str(Path(__file__).resolve().parents[4])
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from Science_code.text_algorithms.code.huffman_classic_approach import huffman_code_tree, build_huffman_tree
+from Science_code.text_algorithms.core.huffman_classic_approach import huffman_code_tree, build_huffman_tree
 
 
 class HuffmanFFTSpectralAnalyzer:
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     # Dummy binary sequence for testing
     #test_binary_sequence = "1011001010101100101010110010101011001011001010101100"
 
-    filename = "reddit.txt"
+    filename = "GM(2000)(1).txt"
 
     with open(ROOT / "Science_code" / "text_algorithms" / "texts" / filename, "r", encoding='utf-8') as file:
         text = file.read()
