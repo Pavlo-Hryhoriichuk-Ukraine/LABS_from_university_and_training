@@ -1,17 +1,16 @@
 import math
-from dataclasses import dataclass
-from collections.abc import Iterator
-from collections import Counter
-import numpy as np
-import matplotlib.pyplot as plt
-import numba
-from numba.typed import List
-from scipy.fft import rfft, rfftfreq  # type: ignore
-from scipy.signal import find_peaks   # type: ignore
-import time
-from pathlib import Path
-import sys
 import os
+import sys
+import time
+from collections import Counter
+from collections.abc import Iterator
+from dataclasses import dataclass
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.fft import rfft, rfftfreq  # type: ignore
+from scipy.signal import find_peaks  # type: ignore
 
 SAVE_PATH = Path(__file__).parent.resolve() / "results"
 
@@ -48,7 +47,7 @@ def _python_factorize(n: int) -> tuple[list[int], list[int]]:
 
     # 2. Перевіряємо непарні дільники
     divisor = 3
-    limit = math.isqrt(n) # math.isqrt працює набагато швидше з Bignum
+    limit = math.isqrt(n)  # math.isqrt працює набагато швидше з Bignum
 
     while divisor <= limit:
         count = 0
@@ -59,7 +58,7 @@ def _python_factorize(n: int) -> tuple[list[int], list[int]]:
         if count > 0:
             primes.append(divisor)
             exponents.append(count)
-            limit = math.isqrt(n) # Динамічне звуження межі
+            limit = math.isqrt(n)  # Динамічне звуження межі
 
         divisor += 2
 
@@ -70,11 +69,13 @@ def _python_factorize(n: int) -> tuple[list[int], list[int]]:
 
     return primes, exponents
 
+
 @dataclass(slots=True, frozen=True)
 class FactorizationResult:
     """
     Immutable data structure for storing factorization results.
     """
+
     primes: list[int]
     exponents: list[int]
 
@@ -101,8 +102,7 @@ class HuffmanFactorizer:
 
         # Перетворюємо Numba List назад у звичайні Python list для сумісності з іншим кодом
         return FactorizationResult(
-            primes=list(raw_primes),
-            exponents=list(raw_exponents)
+            primes=list(raw_primes), exponents=list(raw_exponents)
         )
 
     def process_sequence(self, binary_sequence: str) -> list[FactorizationResult]:
@@ -122,7 +122,9 @@ class HuffmanFactorizer:
             if i > 0 and i % 500 == 0:
                 elapsed = time.time() - start_time
                 speed = i / elapsed
-                print(f" ⏳ Оброблено: {i} / {total_chunks} блоків | Швидкість: {speed:.1f} блоків/сек")
+                print(
+                    f" ⏳ Оброблено: {i} / {total_chunks} блоків | Швидкість: {speed:.1f} блоків/сек"
+                )
 
             results.append(self.factorize(num))
 
@@ -131,9 +133,11 @@ class HuffmanFactorizer:
 
         return results
 
+
 # ==========================================
 # 2. SIGNAL EXTRACTOR FUNCTIONS
 # ==========================================
+
 
 def extract_smoothness_signal(results: list[FactorizationResult]) -> list[int]:
     """
@@ -141,25 +145,33 @@ def extract_smoothness_signal(results: list[FactorizationResult]) -> list[int]:
     """
     return [sum(res.exponents) for res in results]
 
+
 def extract_lpf_signal(results: list[FactorizationResult]) -> list[int]:
     """
     Returns an array of the Largest Prime Factors (LPF) for each block.
     """
     return [res.primes[-1] if res.primes else 1 for res in results]
 
+
 # ==========================================
 # 3. ANALYZERS AND VISUALIZERS
 # ==========================================
+
 
 class StatisticalVisualizer:
     """
     Analyzes and visualizes the statistical distribution of integer metrics
     (smoothness index, powers of two, etc.) to detect generation anomalies.
     """
+
     def __init__(self, signal_data: list[int]) -> None:
         self.signal = signal_data
 
-    def plot_histogram(self, filename, title: str = "Distribution of Smoothness Index (Sum of Exponents)") -> None:
+    def plot_histogram(
+        self,
+        filename,
+        title: str = "Distribution of Smoothness Index (Sum of Exponents)",
+    ) -> None:
         """
         Builds a bar chart of frequencies and calculates the variance of the array.
         """
@@ -176,7 +188,7 @@ class StatisticalVisualizer:
 
         # 2. Mathematical statistics for AI analysis
         mean_val = float(np.mean(self.signal))
-        variance_val = float(np.var(self.signal)) # Variance is our main detector!
+        variance_val = float(np.var(self.signal))  # Variance is our main detector!
 
         # 3. Plotting the graph
         plt.figure(figsize=(10, 5))
@@ -188,7 +200,7 @@ class StatisticalVisualizer:
             color="mediumseagreen",
             edgecolor="darkgreen",
             alpha=0.85,
-            zorder=3
+            zorder=3,
         )
 
         # 4. Add exact numbers on top of each bar
@@ -196,16 +208,20 @@ class StatisticalVisualizer:
             height = bar.get_height()
             plt.text(
                 bar.get_x() + bar.get_width() / 2,
-                height + (max(y_values) * 0.015), # Slightly above the top
+                height + (max(y_values) * 0.015),  # Slightly above the top
                 str(height),
-                ha='center',
-                va='bottom',
+                ha="center",
+                va="bottom",
                 fontsize=10,
-                fontweight='bold'
+                fontweight="bold",
             )
 
         # 5. Formatting and design
-        plt.title(f"FILENAME: {filename}  |  {title}\nVariance: {variance_val:.2f} | Mean: {mean_val:.2f}", fontsize=14, pad=15)
+        plt.title(
+            f"FILENAME: {filename}  |  {title}\nVariance: {variance_val:.2f} | Mean: {mean_val:.2f}",
+            fontsize=14,
+            pad=15,
+        )
         plt.xlabel("Sum of exponents (Number of 'atoms' in a block)", fontsize=12)
         plt.ylabel("Frequency", fontsize=12)
 
@@ -213,15 +229,17 @@ class StatisticalVisualizer:
         plt.xticks(range(min(x_values), max(x_values) + 1))
 
         # Add a horizontal grid for better readability
-        plt.grid(axis='y', linestyle='--', alpha=0.6, zorder=0)
+        plt.grid(axis="y", linestyle="--", alpha=0.6, zorder=0)
         plt.tight_layout()
         plt.savefig(SAVE_PATH / f"2_{filename}__histogram.png")
         plt.show()
+
 
 class LPFSpectralAnalyzer:
     """
     Applies Fast Fourier Transform to the discrete signal of Largest Prime Factors (LPF).
     """
+
     def __init__(self, lpf_signal: list[int]) -> None:
         self.raw_signal = lpf_signal
         self.signal: np.ndarray | None = None
@@ -238,10 +256,12 @@ class LPFSpectralAnalyzer:
         raw_array = np.array(self.raw_signal, dtype=np.float32)
         centered_array = raw_array - np.mean(raw_array)
         max_abs_val = np.max(np.abs(centered_array))
-        self.signal = centered_array / max_abs_val if max_abs_val > 0 else centered_array
+        self.signal = (
+            centered_array / max_abs_val if max_abs_val > 0 else centered_array
+        )
 
         # Apply RFFT
-        n = len(self.signal) # type: ignore
+        n = len(self.signal)  # type: ignore
         fft_result = np.asarray(rfft(self.signal))
         self.frequencies = rfftfreq(n, d=1.0)
 
@@ -253,37 +273,39 @@ class LPFSpectralAnalyzer:
 
         self.amplitudes = normalized_amps
 
-        baseline_noise = float(np.median(self.amplitudes)) # type: ignore
+        baseline_noise = float(np.median(self.amplitudes))  # type: ignore
 
         # Lower thresholds for short test arrays
         min_height = baseline_noise * 1.5
         min_prominence = baseline_noise * 0.5
 
         self.peaks_indices, properties = find_peaks(
-            self.amplitudes,
-            height=min_height,
-            prominence=min_prominence
+            self.amplitudes, height=min_height, prominence=min_prominence
         )
 
-        peak_count = int(len(self.peaks_indices)) # type: ignore
+        peak_count = len(self.peaks_indices)  # type: ignore
         if peak_count > 0 and "peak_heights" in properties:
             max_amplitude = float(np.max(properties["peak_heights"]))
             snr = float(max_amplitude / (baseline_noise + 1e-10))
         else:
-            max_amplitude = float(np.max(self.amplitudes)) if len(self.amplitudes) > 0 else 0.0 # type: ignore
+            max_amplitude = (
+                float(np.max(self.amplitudes)) if len(self.amplitudes) > 0 else 0.0
+            )  # type: ignore
             snr = 1.0
 
         return {
             "peak_count": peak_count,
             "max_amplitude": max_amplitude,
             "baseline_noise": baseline_noise,
-            "snr": snr
+            "snr": snr,
         }
+
 
 class SpectralVisualizer:
     """
     Visualizes the frequency spectrum and detected peaks.
     """
+
     def __init__(self, analyzer: LPFSpectralAnalyzer) -> None:
         self.analyzer = analyzer
 
@@ -295,9 +317,20 @@ class SpectralVisualizer:
         amps = self.analyzer.amplitudes
 
         plt.figure(figsize=(12, 6))
-        plt.plot(freqs, amps, color="steelblue", linewidth=1.2, alpha=0.85, label="LPF Spectrum")
+        plt.plot(
+            freqs,
+            amps,
+            color="steelblue",
+            linewidth=1.2,
+            alpha=0.85,
+            label="LPF Spectrum",
+        )
 
-        if show_peaks and self.analyzer.peaks_indices is not None and len(self.analyzer.peaks_indices) > 0:
+        if (
+            show_peaks
+            and self.analyzer.peaks_indices is not None
+            and len(self.analyzer.peaks_indices) > 0
+        ):
             peak_idx = self.analyzer.peaks_indices
             plt.scatter(
                 freqs[peak_idx],
@@ -306,10 +339,13 @@ class SpectralVisualizer:
                 marker="o",
                 s=60,
                 zorder=5,
-                label=f"Peaks ({len(peak_idx)})"
+                label=f"Peaks ({len(peak_idx)})",
             )
 
-        plt.title(f"FILENAME: {filename}  |  Spectral Analysis of the LPF Array (AI vs Human)", fontsize=14)
+        plt.title(
+            f"FILENAME: {filename}  |  Spectral Analysis of the LPF Array (AI vs Human)",
+            fontsize=14,
+        )
         plt.xlabel("Frequency (cycles per block)", fontsize=12)
         plt.ylabel("Normalized Amplitude", fontsize=12)
         plt.grid(True, linestyle="--", alpha=0.5)
@@ -318,12 +354,12 @@ class SpectralVisualizer:
         plt.savefig(SAVE_PATH / f"1_{filename}__FFT_factorize_huffman_likewords.png")
         plt.show()
 
+
 # ==========================================
 # MAIN EXECUTION BLOCK
 # ==========================================
 if __name__ == "__main__":
-
-    filename = "Human 53 (30000)"
+    filename = "HUMAN_ART_Augustine"
     binary_text = get_binary_from_file(filename)
     print("[1] Starting factorization of 32-bit blocks...")
     factorizer = HuffmanFactorizer(block_size=32)
@@ -361,4 +397,3 @@ if __name__ == "__main__":
     spectrum_visualizer.plot_spectrum(filename)
 
     print("\n[4] Analysis completed successfully.")
-
